@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSINT Dashboard - Abraham Ojeda Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+            font-family: 'Courier New', Courier, monospace; /* Estilo Hacker/Terminal */
+        }
+        .card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
+        }
+        .btn-osint {
+            @apply flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors;
+        }
+        .section-title {
+            @apply text-lg font-bold text-blue-400 mb-4 flex items-center gap-2;
+        }
+        input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+    <!-- Header -->
+    <header class="max-w-6xl mx-auto mb-8 border-b border-gray-700 pb-4">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-white"><i class="fas fa-user-secret mr-3"></i>OSINT <span class="text-blue-500">DASHBOARD</span></h1>
+                <p class="text-gray-400 text-sm mt-1">Herramienta de Recolección de Inteligencia de Fuentes Abiertas</p>
+            </div>
+            <div class="mt-4 md:mt-0 text-right">
+                <p class="text-xs text-yellow-500"><i class="fas fa-exclamation-triangle"></i> Solo para fines educativos y legales.</p>
+                <p class="text-xs text-gray-500">Dev: Abraham Ojeda</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Panel de Control Principal -->
+    <main class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+        <!-- Columna Izquierda: Inputs -->
+        <div class="lg:col-span-1 space-y-6">
+            <div class="card p-6 rounded-lg sticky top-8">
+                <h2 class="text-xl font-bold mb-4 text-white border-b border-gray-600 pb-2">Objetivo</h2>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Nombre Completo</label>
+                    <input type="text" id="targetName" value="Martha Rodríguez Salinas" class="w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-white placeholder-gray-500">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Usuario / Alias</label>
+                    <input type="text" id="targetUsername" placeholder="ej. marthars" class="w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-white placeholder-gray-500">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Organización / Sitio</label>
+                    <input type="text" id="targetOrg" value="stspepyod" class="w-full bg-slate-800 border border-slate-600 rounded px-3 py-2 text-white placeholder-gray-500">
+                    <p class="text-xs text-gray-500 mt-1">Ej: sindicato, empresa o dominio.com</p>
+                </div>
+
+                <div class="mt-6 p-3 bg-blue-900/30 border border-blue-800 rounded text-xs text-blue-200">
+                    <i class="fas fa-info-circle"></i> Los botones abrirán nuevas pestañas con búsquedas avanzadas (Google Dorks) pre-configuradas.
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna Derecha: Herramientas -->
+        <div class="lg:col-span-3 space-y-6">
+
+            <!-- Sección 1: Búsquedas Generales y Noticias -->
+            <div class="card p-6 rounded-lg">
+                <h3 class="section-title"><i class="fas fa-search"></i> Motores de Búsqueda y Noticias</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button onclick="searchGeneral()" class="btn-osint bg-slate-700 hover:bg-slate-600">
+                        <i class="fab fa-google mr-2"></i> Búsqueda Exacta
+                    </button>
+                    <button onclick="searchNews()" class="btn-osint bg-slate-700 hover:bg-slate-600">
+                        <i class="fas fa-newspaper mr-2"></i> Google Noticias
+                    </button>
+                    <button onclick="searchImages()" class="btn-osint bg-slate-700 hover:bg-slate-600">
+                        <i class="fas fa-images mr-2"></i> Google Imágenes
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sección 2: Google Dorks (La magia) -->
+            <div class="card p-6 rounded-lg">
+                <h3 class="section-title"><i class="fas fa-code"></i> Google Dorks (Archivos y Relaciones)</h3>
+                <p class="text-sm text-gray-400 mb-4">Busca archivos expuestos o menciones en sitios específicos.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <button onclick="dorkPDF()" class="bg-red-900/50 hover:bg-red-800 text-red-100 py-2 px-4 rounded border border-red-800 flex items-center justify-between group">
+                        <span>Filetype: PDF</span>
+                        <i class="fas fa-file-pdf group-hover:scale-110 transition-transform"></i>
+                    </button>
+                    <button onclick="dorkExcel()" class="bg-green-900/50 hover:bg-green-800 text-green-100 py-2 px-4 rounded border border-green-800 flex items-center justify-between group">
+                        <span>Filetype: Excel/CSV</span>
+                        <i class="fas fa-file-excel group-hover:scale-110 transition-transform"></i>
+                    </button>
+                    <button onclick="dorkDocs()" class="bg-blue-900/50 hover:bg-blue-800 text-blue-100 py-2 px-4 rounded border border-blue-800 flex items-center justify-between group">
+                        <span>Filetype: Word</span>
+                        <i class="fas fa-file-word group-hover:scale-110 transition-transform"></i>
+                    </button>
+                    <button onclick="dorkPastebin()" class="bg-slate-700 hover:bg-slate-600 py-2 px-4 rounded text-white flex items-center justify-between">
+                        <span>Leaks (Pastebin)</span>
+                        <i class="fas fa-clipboard"></i>
+                    </button>
+                    <button onclick="dorkDrive()" class="bg-slate-700 hover:bg-slate-600 py-2 px-4 rounded text-white flex items-center justify-between">
+                        <span>Google Drive Público</span>
+                        <i class="fab fa-google-drive"></i>
+                    </button>
+                     <button onclick="dorkOrgRelation()" class="bg-purple-900/50 hover:bg-purple-800 text-purple-100 py-2 px-4 rounded border border-purple-800 flex items-center justify-between">
+                        <span>Relación con Org.</span>
+                        <i class="fas fa-building"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sección 3: Redes Sociales -->
+            <div class="card p-6 rounded-lg">
+                <h3 class="section-title"><i class="fas fa-hashtag"></i> Redes Sociales</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <button onclick="searchSocial('facebook.com')" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-center">
+                        <i class="fab fa-facebook"></i> Facebook
+                    </button>
+                    <button onclick="searchSocial('twitter.com')" class="bg-sky-500 hover:bg-sky-600 text-white py-2 px-4 rounded text-center">
+                        <i class="fab fa-twitter"></i> X / Twitter
+                    </button>
+                    <button onclick="searchSocial('linkedin.com')" class="bg-blue-800 hover:bg-blue-900 text-white py-2 px-4 rounded text-center">
+                        <i class="fab fa-linkedin"></i> LinkedIn
+                    </button>
+                    <button onclick="searchSocial('instagram.com')" class="bg-pink-600 hover:bg-pink-700 text-white py-2 px-4 rounded text-center">
+                        <i class="fab fa-instagram"></i> Instagram
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sección 4: Registros Públicos México (Específico) -->
+            <div class="card p-6 rounded-lg border-l-4 border-green-500">
+                <h3 class="section-title text-green-400"><i class="fas fa-globe-americas"></i> México / Registros Públicos</h3>
+                <p class="text-sm text-gray-400 mb-4">Herramientas específicas para investigación legal y académica en México.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="searchCedula()" class="bg-gray-700 hover:bg-gray-600 py-3 px-4 rounded text-left flex items-center gap-3">
+                        <div class="bg-green-500 w-8 h-8 rounded flex items-center justify-center text-black font-bold">CP</div>
+                        <div>
+                            <div class="font-bold text-white">Registro de Cédulas (SEP)</div>
+                            <div class="text-xs text-gray-400">Verificar profesión (Búsqueda manual)</div>
+                        </div>
+                    </button>
+                     <button onclick="searchPNT()" class="bg-gray-700 hover:bg-gray-600 py-3 px-4 rounded text-left flex items-center gap-3">
+                        <div class="bg-yellow-500 w-8 h-8 rounded flex items-center justify-center text-black font-bold">PT</div>
+                        <div>
+                            <div class="font-bold text-white">Plataforma de Transparencia</div>
+                            <div class="text-xs text-gray-400">Sueldos y contratos públicos</div>
+                        </div>
+                    </button>
+                    <button onclick="searchBuho()" class="bg-gray-700 hover:bg-gray-600 py-3 px-4 rounded text-left flex items-center gap-3">
+                        <div class="bg-purple-500 w-8 h-8 rounded flex items-center justify-center text-black font-bold">BL</div>
+                        <div>
+                            <div class="font-bold text-white">BuhoLegal / Dateas</div>
+                            <div class="text-xs text-gray-400">Boletines judiciales públicos</div>
+                        </div>
+                    </button>
+                    <button onclick="searchDiarioOficial()" class="bg-gray-700 hover:bg-gray-600 py-3 px-4 rounded text-left flex items-center gap-3">
+                        <div class="bg-orange-500 w-8 h-8 rounded flex items-center justify-center text-black font-bold">DO</div>
+                        <div>
+                            <div class="font-bold text-white">Diario Oficial (DOF/POE)</div>
+                            <div class="text-xs text-gray-400">Menciones en decretos oficiales</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="max-w-6xl mx-auto mt-12 text-center text-gray-500 text-xs pb-8">
+        <p>OSINT Dashboard v1.0. Las herramientas aquí mostradas utilizan operadores públicos de búsqueda.</p>
+    </footer>
+
+    <script>
+        // Funciones de ayuda para obtener valores
+        function getName() {
+            const val = document.getElementById('targetName').value.trim();
+            return val ? `"${val}"` : '';
+        }
+
+        function getOrg() {
+            return document.getElementById('targetOrg').value.trim();
+        }
+
+        function getUsername() {
+            return document.getElementById('targetUsername').value.trim();
+        }
+
+        function openSearch(query) {
+            if (!getName() && !getUsername()) {
+                alert("Por favor ingresa un nombre o un usuario.");
+                return;
+            }
+            const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+            window.open(url, '_blank');
+        }
+
+        // --- Funciones de Botones ---
+
+        function searchGeneral() {
+            openSearch(getName());
+        }
+
+        function searchNews() {
+            const url = `https://www.google.com/search?tbm=nws&q=${encodeURIComponent(getName())}`;
+            window.open(url, '_blank');
+        }
+
+        function searchImages() {
+            const url = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(getName())}`;
+            window.open(url, '_blank');
+        }
+
+        // Google Dorks
+        function dorkPDF() {
+            openSearch(`${getName()} filetype:pdf`);
+        }
+
+        function dorkExcel() {
+            openSearch(`${getName()} (filetype:xls OR filetype:xlsx OR filetype:csv)`);
+        }
+
+        function dorkDocs() {
+            openSearch(`${getName()} (filetype:doc OR filetype:docx)`);
+        }
+
+        function dorkPastebin() {
+            openSearch(`site:pastebin.com ${getName()}`);
+        }
+
+        function dorkDrive() {
+             openSearch(`site:drive.google.com ${getName()}`);
+        }
+
+        function dorkOrgRelation() {
+            const org = getOrg();
+            if(org) {
+                openSearch(`${getName()} site:${org} OR "${org}"`);
+            } else {
+                openSearch(`${getName()} "sindicato" OR "gobierno"`);
+            }
+        }
+
+        // Redes Sociales
+        function searchSocial(site) {
+            openSearch(`site:${site} ${getName()}`);
+        }
+
+        // Herramientas México
+        function searchCedula() {
+            // Este abre directamente el sitio porque no permite dorking fácil, es búsqueda manual
+            window.open('https://www.cedulaprofesional.sep.gob.mx/cedula/presidencia/indexAvanzada.action', '_blank');
+        }
+
+        function searchPNT() {
+            // Plataforma Nacional de Transparencia
+            window.open('https://www.plataformadetransparencia.org.mx/', '_blank');
+        }
+
+        function searchBuho() {
+            // Búsqueda en Google restringida a sitios legales comunes
+            openSearch(`${getName()} (site:buholegal.com OR site:dateas.com OR site:poderjudicialvirtual.com)`);
+        }
+
+        function searchDiarioOficial() {
+            openSearch(`${getName()} (site:dof.gob.mx OR site:puebla.gob.mx "Periódico Oficial")`);
+        }
+
+    </script>
+</body>
+</html>
